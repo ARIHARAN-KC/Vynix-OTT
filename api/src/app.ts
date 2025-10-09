@@ -18,6 +18,7 @@ import {
   handle404,
 } from "./appHelper.js";
 import db from "./models/index.js";
+import passport from "./config/passport.js";
 
 export const app = express();
 export const port = normalizePort(process.env.PORT || "5000");
@@ -81,7 +82,7 @@ app.use("/assets", express.static(path.join(__dirname, "", "web", "assets")));
 app.use("/favicon", express.static(path.join(__dirname, "", "web", "favicon")));
 app.use("/api/v1", router);
 
-// serve react build
+// // serve react build
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "", "web", "index.html"));
 });

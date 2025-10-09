@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle, FaMicrosoft, FaTwitter, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import vynixLogo from "../../../assets/logo/vynix.png";
-
+import { authService } from "../../../services/authService";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +11,8 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,51 +20,36 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
     
     try {
-      // Replace with your actual login logic
-      console.log("Login attempt:", formData);
+      const response = await authService.login(formData);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful login
-      const userData = {
-        email: formData.email,
-        username: formData.email.split('@')[0],
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/');
+      if (response.token && response.user) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        navigate('/');
+      }
     } catch (error) {
       console.error('Login error:', error);
+      setError(error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleOAuth = (provider) => {
-    // Replace with your actual OAuth logic
-    console.log(`OAuth login with: ${provider}`);
-    // For demo purposes, we'll simulate a successful login
-    const userData = {
-      email: `user@${provider.toLowerCase()}.com`,
-      username: `${provider}User`,
-    };
-    localStorage.setItem('user', JSON.stringify(userData));
-    navigate('/');
+  const handleGoogleLogin = () => {
+    setGoogleLoading(true);
+    // Use the correct API URL from environment
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+    window.location.href = `${API_URL}/account/auth/google`;
   };
-
-  const oauthProviders = [
-    { name: "Google", icon: FaGoogle, color: "from-[#4285F4] to-[#34A853]" },
-    { name: "Microsoft", icon: FaMicrosoft, color: "from-[#00A4EF] to-[#7FBA00]" },
-    { name: "X", icon: FaTwitter, color: "from-[#000000] to-[#71767B]" },
-    { name: "Meta", icon: FaFacebook, color: "from-[#1877F2] to-[#42B72A]" },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B17] via-[#1A0B2E] to-[#2D0B45] flex items-center justify-center p-4 font-['Inter']">
@@ -76,25 +63,31 @@ const Login = () => {
           <p className="text-white/60 mt-2">Sign in to continue your anime journey</p>
         </div>
 
-        {/* OAuth Buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {oauthProviders.map((provider) => {
-            const Icon = provider.icon;
-            return (
-              <button
-                key={provider.name}
-                onClick={() => handleOAuth(provider.name)}
-                className={`p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 group`}
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon className={`text-xl bg-gradient-to-r ${provider.color} bg-clip-text text-transparent`} />
-                  <span className="text-white/80 text-sm font-medium group-hover:text-white">
-                    {provider.name}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Google OAuth Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleGoogleLogin}
+            disabled={googleLoading}
+            className="w-full p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <div className="flex items-center justify-center space-x-2">
+              {googleLoading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <FaGoogle className="text-xl text-white" />
+              )}
+              <span className="text-white/80 text-sm font-medium group-hover:text-white">
+                {googleLoading ? "Connecting..." : "Continue with Google"}
+              </span>
+            </div>
+          </button>
         </div>
 
         {/* Divider */}

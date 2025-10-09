@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle, FaMicrosoft, FaTwitter, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import vynixLogo from "../../../assets/logo/vynix.png";
-
+import { authService } from "../../../services/authService";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -14,6 +14,8 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,57 +23,56 @@ const Signup = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+      setError("Passwords don't match!");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
       return;
     }
 
     setIsLoading(true);
-    
+    setError("");
+
     try {
-      // Replace with your actual signup logic
-      console.log("Signup attempt:", formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful signup
-      const userData = {
+      const response = await authService.signup({
+        userName: formData.userName,
         email: formData.email,
-        username: formData.username,
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/');
+        password: formData.password,
+      });
+
+      // Auto-login after successful signup
+      const loginResponse = await authService.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (loginResponse.token && loginResponse.user) {
+        localStorage.setItem('token', loginResponse.token);
+        localStorage.setItem('user', JSON.stringify(loginResponse.user));
+        navigate('/');
+      }
     } catch (error) {
       console.error('Signup error:', error);
+      setError(error.message || 'Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleOAuth = (provider) => {
-    // Replace with your actual OAuth logic
-    console.log(`OAuth signup with: ${provider}`);
-    // For demo purposes, we'll simulate a successful signup
-    const userData = {
-      email: `user@${provider.toLowerCase()}.com`,
-      username: `${provider}User`,
-    };
-    localStorage.setItem('user', JSON.stringify(userData));
-    navigate('/');
+  const handleGoogleSignup = () => {
+    setGoogleLoading(true);
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+    window.location.href = `${API_URL}/account/auth/google`;
   };
-
-  const oauthProviders = [
-    { name: "Google", icon: FaGoogle, color: "from-[#4285F4] to-[#34A853]" },
-    { name: "Microsoft", icon: FaMicrosoft, color: "from-[#00A4EF] to-[#7FBA00]" },
-    { name: "X", icon: FaTwitter, color: "from-[#000000] to-[#71767B]" },
-    { name: "Meta", icon: FaFacebook, color: "from-[#1877F2] to-[#42B72A]" },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B17] via-[#1A0B2E] to-[#2D0B45] flex items-center justify-center p-4 font-['Inter']">
@@ -85,25 +86,31 @@ const Signup = () => {
           <p className="text-white/60 mt-2">Create your account and start your anime adventure</p>
         </div>
 
-        {/* OAuth Buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {oauthProviders.map((provider) => {
-            const Icon = provider.icon;
-            return (
-              <button
-                key={provider.name}
-                onClick={() => handleOAuth(provider.name)}
-                className={`p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 group`}
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon className={`text-xl bg-gradient-to-r ${provider.color} bg-clip-text text-transparent`} />
-                  <span className="text-white/80 text-sm font-medium group-hover:text-white">
-                    {provider.name}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Google OAuth Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleGoogleSignup}
+            disabled={googleLoading}
+            className="w-full p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <div className="flex items-center justify-center space-x-2">
+              {googleLoading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <FaGoogle className="text-xl text-white" />
+              )}
+              <span className="text-white/80 text-sm font-medium group-hover:text-white">
+                {googleLoading ? "Connecting..." : "Sign up with Google"}
+              </span>
+            </div>
+          </button>
         </div>
 
         {/* Divider */}
@@ -119,14 +126,14 @@ const Signup = () => {
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-white/80 mb-2">
+            <label htmlFor="userName" className="block text-sm font-medium text-white/80 mb-2">
               Username
             </label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              id="userName"
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
               required
               className="w-full px-4 py-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
@@ -163,7 +170,7 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
-                placeholder="Create a password"
+                placeholder="Create a password (min. 8 characters)"
               />
               <button
                 type="button"

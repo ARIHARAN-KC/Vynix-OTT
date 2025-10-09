@@ -11,9 +11,9 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center mb-4">
-              <img 
-                src={vynixLogo} 
-                alt="Vynix" 
+              <img
+                src={vynixLogo}
+                alt="Vynix"
                 className="h-8 w-auto"
               />
             </div>
@@ -85,7 +85,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2024 Vynix. All rights reserved.
+              © {new Date().getFullYear()} Vynix. All rights reserved.
             </div>
             <div className="flex space-x-6 text-sm">
               {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (

@@ -80,8 +80,8 @@ async function create(req: Request, res: Response, next: NextFunction) {
       password: hashedPassword,
       role: finalRole,
       picture,
-      createdBy: req.headers["user-id"] || null,
-      updatedBy: req.headers["user-id"] || null,
+      createdBy: req.headers["user-id"] || 'system',
+      updatedBy: req.headers["user-id"] || 'system',
     });
 
     return res.status(201).json({
@@ -180,6 +180,11 @@ async function changePassword(req: Request, res: Response, next: NextFunction) {
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if user has a password (OAuth users might not have passwords)
+    if (!user.password) {
+      return res.status(400).json({ error: "This account uses OAuth login and doesn't have a password set." });
     }
 
     const validOldPassword = await bcrypt.compare(oldPassword, user.password);

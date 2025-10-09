@@ -16,7 +16,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-
+client_secret_812768524428-dvsb4ja7l0o7eka30iejoqsk7ueuc5e0.apps.googleusercontent.com.json
 # nyc test coverage
 .nyc_output
 
