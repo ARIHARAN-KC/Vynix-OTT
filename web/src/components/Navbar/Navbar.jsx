@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaTimes, FaSearch, FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaSearch, FaUser, FaBell, FaSignOutAlt, FaCog, FaUserCircle } from "react-icons/fa";
 import vynixLogo from "../../assets/logo/vynix.png";
-
-// Import the auth hook from your existing auth system
-import { useAuth } from "../../contexts/AuthContext"; // Adjust path based on your actual auth context location
+import { useAuth } from "../../contexts/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
-  // Use your existing auth context
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -20,6 +18,17 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isUserMenuOpen && !event.target.closest('.user-menu')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isUserMenuOpen]);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -32,6 +41,20 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setIsOpen(false);
+    setIsUserMenuOpen(false);
+  };
+
+  // Get user display name with fallbacks
+  const getUserDisplayName = () => {
+    if (user?.userName) return user.userName;
+    if (user?.email) return user.email.split('@')[0]; // Show username part of email
+    return "User";
+  };
+
+  // Truncate long text
+  const truncateText = (text, maxLength = 20) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   };
 
   return (
@@ -42,14 +65,14 @@ const Navbar = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex justify-between items-center h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo & Navigation */}
-          <div className="flex items-center space-x-12">
+          <div className="flex items-center space-x-8 lg:space-x-12">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center">
               <Link to="/">
-                <img src={vynixLogo} alt="Vynix" className="h-16 w-auto" />
+                <img src={vynixLogo} alt="Vynix" className="h-14 lg:h-16 w-auto" />
               </Link>
             </div>
 
@@ -68,55 +91,118 @@ const Navbar = () => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 lg:space-x-4">
             {/* Search */}
             <div className="hidden md:flex items-center space-x-3 px-4 py-2.5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300">
               <FaSearch className="text-white/60 text-base" />
               <input
                 type="text"
                 placeholder="Search anime..."
-                className="bg-transparent border-none outline-none w-40 lg:w-60 text-white placeholder-white/60 text-base"
+                className="bg-transparent border-none outline-none w-32 lg:w-60 text-white placeholder-white/60 text-sm lg:text-base"
               />
             </div>
 
             {/* Auth Buttons / User Menu */}
             {user ? (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 lg:space-x-3 user-menu">
                 <button className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-white/80 hover:text-white">
                   <FaBell size={16} />
                 </button>
-                <div className="relative group">
-                  <button className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-white/80 hover:text-white">
-                    <FaUser size={16} />
+                
+                {/* User Dropdown */}
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center space-x-2 p-2 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-white/80 hover:text-white"
+                  >
+                    {user.picture ? (
+                      <img 
+                        src={user.picture} 
+                        alt="Profile" 
+                        className="w-6 h-6 lg:w-7 lg:h-7 rounded-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle size={18} className="text-white/70" />
+                    )}
+                    <span className="hidden lg:block text-sm font-medium max-w-24 truncate">
+                      {truncateText(getUserDisplayName(), 12)}
+                    </span>
                   </button>
+
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-12 w-48 bg-[#0B0B17]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="p-2">
-                      <div className="px-3 py-2 text-sm text-gray-300 border-b border-white/10">
-                        {user.email || user.username || "User"}
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 top-12 w-56 bg-[#0B0B17]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl z-50 overflow-hidden">
+                      {/* User Info Section */}
+                      <div className="p-4 border-b border-white/10">
+                        <div className="flex items-center space-x-3">
+                          {user.picture ? (
+                            <img 
+                              src={user.picture} 
+                              alt="Profile" 
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] flex items-center justify-center">
+                              <FaUser className="text-white text-sm" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white font-medium text-sm truncate">
+                              {getUserDisplayName()}
+                            </p>
+                            <p className="text-white/60 text-xs truncate">
+                              {user.email || "No email"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-400 hover:bg-white/5 rounded-lg transition-colors duration-300"
-                      >
-                        <FaSignOutAlt size={14} />
-                        <span>Sign Out</span>
-                      </button>
+
+                      {/* Menu Items */}
+                      <div className="p-2">
+                        <Link
+                          to="/profile"
+                          className="flex items-center space-x-3 w-full px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 rounded-lg transition-all duration-300 group"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <FaUser className="text-white/60 group-hover:text-white text-sm" />
+                          <span>Profile</span>
+                        </Link>
+                        
+                        <Link
+                          to="/settings"
+                          className="flex items-center space-x-3 w-full px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 rounded-lg transition-all duration-300 group"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <FaCog className="text-white/60 group-hover:text-white text-sm" />
+                          <span>Settings</span>
+                        </Link>
+
+                        {/* Logout Button */}
+                        <div className="border-t border-white/10 mt-2 pt-2">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center space-x-3 w-full px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-300 group"
+                          >
+                            <FaSignOutAlt className="text-red-400 group-hover:text-red-300 text-sm" />
+                            <span>Sign Out</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 lg:space-x-3">
                 <Link
                   to="/login"
-                  className="px-6 py-2.5 text-base font-medium text-white/80 hover:text-white transition-all duration-300"
+                  className="px-4 lg:px-6 py-2 lg:py-2.5 text-sm lg:text-base font-medium text-white/80 hover:text-white transition-all duration-300"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-semibold text-white hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all duration-300"
+                  className="px-4 lg:px-6 py-2 lg:py-2.5 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-semibold text-white hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all duration-300 text-sm lg:text-base"
                 >
                   Sign Up
                 </Link>
@@ -158,8 +244,55 @@ const Navbar = () => {
                 />
               </div>
 
-              {/* Mobile Auth Buttons */}
-              {!user ? (
+              {/* Mobile User Info */}
+              {user ? (
+                <div className="pt-4 border-t border-white/10">
+                  <div className="flex items-center space-x-3 px-3 py-2 mb-3">
+                    {user.picture ? (
+                      <img 
+                        src={user.picture} 
+                        alt="Profile" 
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] flex items-center justify-center">
+                        <FaUser className="text-white text-sm" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-medium text-sm truncate">
+                        {getUserDisplayName()}
+                      </p>
+                      <p className="text-white/60 text-xs truncate">
+                        {user.email || "No email"}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Link
+                      to="/profile"
+                      className="block px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 rounded-lg transition-all duration-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="block px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 rounded-lg transition-all duration-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Settings
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-300"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
                 <div className="flex space-x-3 pt-4 border-t border-white/10">
                   <Link
                     to="/login"
@@ -175,19 +308,6 @@ const Navbar = () => {
                   >
                     Sign Up
                   </Link>
-                </div>
-              ) : (
-                <div className="pt-4 border-t border-white/10">
-                  <div className="px-3 py-2 text-sm text-gray-300">
-                    {user.email || user.username || "User"}
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center justify-center space-x-2 py-3 text-red-400 hover:bg-white/5 rounded-lg transition-colors duration-300"
-                  >
-                    <FaSignOutAlt size={14} />
-                    <span>Sign Out</span>
-                  </button>
                 </div>
               )}
             </div>

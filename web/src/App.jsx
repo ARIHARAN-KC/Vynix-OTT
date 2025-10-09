@@ -7,7 +7,8 @@ import Footer from "./components/Footer/Footer";
 
 // Auth Components
 import Login from "./components/Auth/Login/Login";
-import Signup from "./components/Auth/Signup/Signup";
+import Signup from "./components/Auth/SIgnup/Signup";
+import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess"; // Add this import
 
 // Pages
 import Home from "./pages/Home/Home";
@@ -32,6 +33,7 @@ function App() {
           <Route path="/new" element={<New />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} /> {/* Add this route */}
         </Routes>
       </main>
 

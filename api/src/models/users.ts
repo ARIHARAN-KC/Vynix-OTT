@@ -1,48 +1,39 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 import { Models } from "./types.js";
 import sequelize from "../config/config.js";
-import { Seq } from "aws-sdk/clients/iotwireless.js";
 
 interface UserAttributes {
     id: string;
     userName: string;
     email?: string;
     role?: "user" | "admin";
-    password: string;
+    password?: string;
     picture?: string;
-    createdBy?: Date;
-    updatedBy?: Date;
+    createdBy?: string;
+    updatedBy?: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id" | "email" | "role" | "picture" | "createdBy" | "updatedBy"> { }
+interface UserCreationAttributes extends Optional<UserAttributes, "id" | "email" | "role" | "password" | "picture" | "createdBy" | "updatedBy"> { }
 
-export class User
-    extends Model<UserAttributes, UserCreationAttributes>
-    implements UserAttributes {
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     declare id: string;
-    declare userName: string
+    declare userName: string;
     declare email?: string;
     declare role?: "user" | "admin";
-    declare password: string
+    declare password?: string;
     declare picture?: string;
-    declare createdBy?: Date
-    declare updatedBy?: Date
-
+    declare createdBy?: string;
+    declare updatedBy?: string;
 
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
 
-    declare dataValues?: User;
-
-    // associations
     declare static associations: {};
 
     static associate(models: Models) {
-        // define association here if needed
-    }
-
+        // define association here if needed in the future
+     }
 }
-
 
 export const UserFactory = (sequelize: Sequelize) => {
     return User.init(
@@ -51,48 +42,41 @@ export const UserFactory = (sequelize: Sequelize) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
-                unique: true,
                 allowNull: false,
             },
             userName: {
                 type: DataTypes.STRING,
-                // unique: true,
-                allowNull: false,
+                allowNull: false
             },
             email: {
                 type: DataTypes.STRING,
-                unique: false,
-                allowNull: true,
+                allowNull: true
             },
             password: {
                 type: DataTypes.STRING,
-                unique: false,
-                allowNull: false,
+                allowNull: true
             },
             role: {
                 type: DataTypes.STRING,
-                unique: false,
                 allowNull: false,
+                defaultValue: "user"
             },
             picture: {
-                type: DataTypes.STRING,
-                unique: false,
-                allowNull: true,
+                type: DataTypes.TEXT, // changed from STRING to TEXT
+                allowNull: true
             },
             createdBy: {
-                type: DataTypes.UUID,
-                unique: false,
-                allowNull: true,
+                type: DataTypes.STRING,
+                allowNull: true
             },
             updatedBy: {
-                type: DataTypes.UUID,
-                unique: false,
-                allowNull: true,
+                type: DataTypes.STRING,
+                allowNull: true
             },
         },
         {
             tableName: "users",
-            sequelize,
+            sequelize
         }
     );
 };
