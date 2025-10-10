@@ -56,9 +56,9 @@ const Login = () => {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
+          {/*<Link to="/" className="inline-block">
             <img src={vynixLogo} alt="Vynix" className="h-20 w-auto mx-auto" />
-          </Link>
+          </Link>*/}
           <h1 className="text-3xl font-bold text-white mt-4">Welcome Back</h1>
           <p className="text-white/60 mt-2">Sign in to continue your anime journey</p>
         </div>

@@ -79,9 +79,9 @@ const Signup = () => {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
+          {/*<Link to="/" className="inline-block">
             <img src={vynixLogo} alt="Vynix" className="h-20 w-auto mx-auto" />
-          </Link>
+          </Link>*/}
           <h1 className="text-3xl font-bold text-white mt-4">Join Vynix</h1>
           <p className="text-white/60 mt-2">Create your account and start your anime adventure</p>
         </div>
