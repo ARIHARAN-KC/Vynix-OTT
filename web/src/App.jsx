@@ -1,14 +1,16 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import VideoPlayer from "./pages/VideoPlayer/VideoPlayer";
 
 // Global Components
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Layout from "./components/Layout/Layout"
+import VideoPlayerLayout from "./components/VideoPlayerLayout/VideoPlayerLayout";
 
 // Auth Components
 import Login from "./components/Auth/Login/Login";
-import Signup from "./components/Auth/SIgnup/Signup";
+import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
 
 // Pages
@@ -60,7 +62,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Auth pages with Layout */}
           <Route path="/login" element={
             <Layout>
@@ -71,6 +73,11 @@ function App() {
             <Layout>
               <Signup />
             </Layout>
+          } />
+          <Route path="/watch/:videoId" element={
+            <VideoPlayerLayout>
+            <VideoPlayer />
+            </VideoPlayerLayout>
           } />
           <Route path="/oauth-success" element={
             <Layout>
