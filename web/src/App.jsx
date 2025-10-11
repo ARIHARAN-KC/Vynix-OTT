@@ -12,7 +12,7 @@ import VideoPlayerLayout from "./components/VideoPlayerLayout/VideoPlayerLayout"
 import Login from "./components/Auth/Login/Login";
 import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
-
+import AdminSignup from "./components/Auth/Admin/Signup/Signup";
 // Pages
 import Home from "./pages/Home/Home";
 import Browse from "./pages/Browser/Browse";
@@ -26,6 +26,12 @@ function App() {
       {/* Main content */}
       <main className="flex-1">
         <Routes>
+          {/* Admin templates */}
+          <Route path="/admin/signup" element={
+            <Layout>
+              <AdminSignup/>
+            </Layout>
+          }/>
           {/* Pages without Layout (if you want Navbar+Footer on these) */}
           <Route path="/" element={
             <>
