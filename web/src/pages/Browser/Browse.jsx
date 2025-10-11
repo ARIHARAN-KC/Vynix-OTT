@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { FaPlay, FaPlus, FaStar, FaTimes } from "react-icons/fa";
-import VideoPlayer from "../VideoPlayer/VideoPlayer"; // adjust path if needed
+import VideoPlayer from "../VideoPlayer/VideoPlayer"; 
 
-// Import posters
 import naruto from "../../assets/posters/naruto.png";
 import narutoShippuden from "../../assets/posters/naruto-shippuden.png";
 import boruto from "../../assets/posters/boruto.png";
@@ -12,7 +11,6 @@ import demonSlayer from "../../assets/posters/demon-slayer.png";
 import jujutsuKaisen from "../../assets/posters/jujutsu-kaisen.png";
 import myHeroAcademia from "../../assets/posters/my-hero-academia.png";
 
-// Anime data
 const movies = [
   { id: 1, title: "Naruto", img: naruto, rating: 4.8, year: 2002, genre: "Action, Adventure", isNew: false, videoId: "JYV-Hxg4a0Y" },
   { id: 2, title: "Naruto Shippuden", img: narutoShippuden, rating: 4.9, year: 2007, genre: "Action, Drama", isNew: true, videoId: "G9R7Wyb-YQk" },
@@ -26,7 +24,6 @@ const movies = [
   { id: 10, title: "Chainsaw Man", img: jujutsuKaisen, rating: 4.7, year: 2022, genre: "Horror, Action", isNew: true, videoId: "eyonP1yMZ6w" },
 ];
 
-// Movie Card Component
 const MovieCard = ({ movie, size = "medium", onPlay }) => (
   <div className="group relative cursor-pointer">
     <div
@@ -54,7 +51,6 @@ const MovieCard = ({ movie, size = "medium", onPlay }) => (
         )}
       </div>
 
-      {/* Hover Overlay */}
       <div className="absolute inset-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl">
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3 className={`font-bold text-white mb-2 ${size === "large" ? "text-lg" : "text-base"}`}>
@@ -83,7 +79,6 @@ const MovieCard = ({ movie, size = "medium", onPlay }) => (
   </div>
 );
 
-// Main Browse Component
 const Browse = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -105,7 +100,6 @@ const Browse = () => {
           </p>
         </div>
 
-        {/* Filters (static for now) */}
         <div className="flex flex-wrap gap-3 mb-10">
           <button className="px-5 py-2.5 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] text-white rounded-full text-sm font-semibold">
             All
@@ -121,14 +115,12 @@ const Browse = () => {
           </button>
         </div>
 
-        {/* Anime Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} size="large" onPlay={handlePlay} />
           ))}
         </div>
 
-        {/* Load More */}
         <div className="flex justify-center mt-16">
           <button className="px-8 py-3.5 bg-white/5 backdrop-blur-md rounded-2xl font-semibold text-white hover:bg-white/10 transition-all duration-300 border border-white/10 flex items-center space-x-2">
             <span>Load More</span>
@@ -137,7 +129,6 @@ const Browse = () => {
         </div>
       </div>
 
-      {/* Video Modal */}
       {selectedMovie && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="relative w-full max-w-5xl">

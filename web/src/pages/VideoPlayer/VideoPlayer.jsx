@@ -1,9 +1,7 @@
-// src/pages/VideoPlayer/VideoPlayer.jsx
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import VideoPlayerLayout from "../../components/VideoPlayerLayout/VideoPlayerLayout";
 
-// Sample playlist data
 const samplePlaylist = [
   { videoId: "JYV-Hxg4a0Y", title: "Naruto - Episode 1" },
   { videoId: "G9R7Wyb-YQk", title: "Naruto Shippuden - Episode 1" },

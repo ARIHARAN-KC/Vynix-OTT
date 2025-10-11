@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { FaPlay, FaPlus, FaStar, FaArrowRight, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import VideoPlayer from "../VideoPlayer/VideoPlayer"; // adjust path if needed
-
-// Import posters
+import VideoPlayer from "../VideoPlayer/VideoPlayer"; 
 import narutoShippuden from "../../assets/posters/naruto-shippuden.png";
 import jujutsuKaisen from "../../assets/posters/jujutsu-kaisen.png";
 
-// Sample data with YouTube video IDs
 const newReleases = [
   {
     id: 2,
@@ -41,7 +38,6 @@ const newReleases = [
   },
 ];
 
-// Reusable MovieCard (with onPlay prop)
 const MovieCard = ({ anime, size = "medium", onPlay }) => (
   <div className="group relative cursor-pointer">
     <div
@@ -58,11 +54,10 @@ const MovieCard = ({ anime, size = "medium", onPlay }) => (
           src={anime.img}
           alt={anime.title}
           className="w-full h-full object-cover rounded-lg transition-transform duration-500 group-hover:scale-105"
-          onClick={() => onPlay(anime)} // Click image to play
+          onClick={() => onPlay(anime)} 
         />
       </div>
 
-      {/* Rating & New Badge */}
       <div className="absolute top-4 left-4 flex items-center space-x-2">
         <div className="px-2.5 py-1.5 bg-black/80 backdrop-blur-sm rounded-full flex items-center space-x-1.5 border border-white/10">
           <FaStar className="text-yellow-400 text-xs" />
@@ -75,7 +70,6 @@ const MovieCard = ({ anime, size = "medium", onPlay }) => (
         )}
       </div>
 
-      {/* Hover Overlay */}
       <div className="absolute inset-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl">
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3
@@ -121,13 +115,10 @@ const New = () => {
 
   return (
     <div className="bg-gradient-to-br from-[#0B0B17] via-[#1a1a2e] to-[#16213e] text-white min-h-screen font-['Inter'] relative">
-      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 -left-20 w-96 h-96 bg-[#ff4ec0]/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 -right-20 w-96 h-96 bg-[#7b2ff7]/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
-
-      {/* Main Content */}
       <div className="relative container mx-auto px-6 py-20">
         <div className="flex items-center justify-between mb-12">
           <div>
@@ -146,15 +137,11 @@ const New = () => {
             <FaArrowRight className="text-sm" />
           </Link>
         </div>
-
-        {/* New Releases Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {newReleases.map((anime) => (
             <MovieCard key={anime.id} anime={anime} size="large" onPlay={handlePlay} />
           ))}
         </div>
-
-        {/* Mobile View All Button */}
         <div className="flex lg:hidden justify-center mt-8">
           <Link
             to="/browse"
@@ -165,8 +152,6 @@ const New = () => {
           </Link>
         </div>
       </div>
-
-      {/* Video Modal */}
       {selectedAnime && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="relative w-full max-w-5xl">
