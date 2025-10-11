@@ -8,9 +8,9 @@ import Layout from "./components/Layout/Layout"
 
 // Auth Components
 import Login from "./components/Auth/Login/Login";
-import Signup from "./components/Auth/SIgnup/Signup";
+import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
-
+import AdminSignup from "./components/Auth/Admin/Signup";
 // Pages
 import Home from "./pages/Home/Home";
 import Browse from "./pages/Browser/Browse";
@@ -77,6 +77,11 @@ function App() {
               <OAuthSuccess />
             </Layout>
           } />
+          <Route path="/admin/Signup" element={
+            <Layout>
+              <AdminSignup/>
+            </Layout>
+          }/>
         </Routes>
       </main>
     </div>
