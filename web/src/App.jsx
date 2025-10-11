@@ -10,7 +10,7 @@ import Layout from "./components/Layout/Layout"
 import Login from "./components/Auth/Login/Login";
 import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
-import AdminSignup from "./components/Auth/Admin/Signup";
+import AdminSignup from "./components/Auth/Admin/Signup/Signup";
 // Pages
 import Home from "./pages/Home/Home";
 import Browse from "./pages/Browser/Browse";

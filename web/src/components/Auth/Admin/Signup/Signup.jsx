@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import vynixLogo from "../../../assets/logo/vynix.png";
-import { authService } from "../../../services/authService";
+import { authService } from "../../../../services/authService";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
