@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPlay, FaPlus, FaStar, FaArrowRight, FaChevronLeft, FaChevronRight, FaPause } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 
 import naruto from "../../assets/posters/naruto.png";
 import narutoShippuden from "../../assets/posters/naruto-shippuden.png";
@@ -23,82 +23,90 @@ const movies = [
   { 
     id: 1, 
     title: "Naruto", 
-    img: naruto, // Poster image for popular shows
-    desktopImg: naruto_desktop, // Desktop image for carousel
+    img: naruto,
+    desktopImg: naruto_desktop,
     rating: 4.8, 
     year: 2002, 
     genre: "Action, Adventure", 
-    isNew: false 
+    isNew: false,
+    videoId: "JYV-Hxg4a0Y"
   },
   { 
     id: 2, 
     title: "Naruto Shippuden", 
-    img: narutoShippuden, // Poster image for popular shows
-    desktopImg: naruto_shippuden_desktop, // Desktop image for carousel
+    img: narutoShippuden,
+    desktopImg: naruto_shippuden_desktop,
     rating: 4.9, 
     year: 2007, 
     genre: "Action, Drama", 
-    isNew: true 
+    isNew: true,
+    videoId: "G9R7Wyb-YQk"
   },
   { 
     id: 3, 
     title: "Jujutsu Kaisen", 
-    img: jujutsuKaisen, // Poster image for popular shows
-    desktopImg: jujutsu_Kaisen_desktop, // Desktop image for carousel
+    img: jujutsuKaisen,
+    desktopImg: jujutsu_Kaisen_desktop,
     rating: 4.2, 
     year: 2017, 
     genre: "Action, Sequel", 
-    isNew: true 
+    isNew: true,
+    videoId: "fw2jTLMbQRk"
   },
   { 
     id: 4, 
     title: "Attack on Titan", 
-    img: attackOnTitan, // Poster image for popular shows
-    desktopImg: attack_on_titan_desktop, // Desktop image for carousel
+    img: attackOnTitan,
+    desktopImg: attack_on_titan_desktop,
     rating: 4.9, 
     year: 2013, 
     genre: "Dark Fantasy", 
-    isNew: false 
+    isNew: false,
+    videoId: "MGRm4IzK1SQ"
   },
   { 
     id: 5, 
     title: "Demon Slayer", 
-    img: demonSlayer, // Poster image for popular shows
-    desktopImg: demon_slayer_desktop, // Desktop image for carousel
+    img: demonSlayer,
+    desktopImg: demon_slayer_desktop,
     rating: 4.7, 
     year: 2019, 
     genre: "Fantasy, Action", 
-    isNew: false 
+    isNew: false,
+    videoId: "VQGCKyvzIM4"
   },
   { 
     id: 6, 
     title: "One Piece", 
-    img: onePiece, // Poster image for popular shows
-    desktopImg: one_piece_desktop, // Desktop image for carousel
+    img: onePiece,
+    desktopImg: one_piece_desktop,
     rating: 4.8, 
     year: 1999, 
     genre: "Adventure, Comedy", 
-    isNew: false 
+    isNew: false,
+    videoId: "S8_YwFLCh4U"
   },
   { 
     id: 7, 
     title: "My Hero Academia", 
-    img: myHeroAcademia, // Poster image for popular shows
-    desktopImg: jujutsu_Kaisen_desktop, // Fallback desktop image
+    img: myHeroAcademia,
+    desktopImg: jujutsu_Kaisen_desktop,
     rating: 4.6, 
     year: 2020, 
     genre: "Supernatural", 
-    isNew: true 
+    isNew: true,
+    videoId: "EPVkcwyLQQ8"
   },
   { 
     id: 8, 
     title: "Boruto", 
-    img: boruto, // Poster image for popular shows
-    desktopImg: naruto_shippuden_desktop, // Fallback desktop image
+    img: boruto,
+    desktopImg: naruto_shippuden_desktop,
     rating: 4.5, 
     year: 2016, 
     genre: "Superhero", 
-    isNew: false 
+    isNew: false,
+    videoId: "tK8Bu6P4CM0"
   },
 ];
 
@@ -106,15 +114,16 @@ const Home = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const navigate = useNavigate();
 
-  // Top 6 trending shows for the hero section carousel (including One Piece)
+  // Top 6 trending shows for the hero section carousel
   const trendingShows = [
     movies[0], // Naruto
     movies[1], // Naruto Shippuden
     movies[2], // Jujutsu Kaisen
     movies[3], // Attack on Titan
     movies[4], // Demon Slayer
-    movies[5], // One Piece (added to carousel)
+    movies[5], // One Piece
   ];
 
   useEffect(() => {
@@ -125,7 +134,7 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Auto-rotate carousel every 8 seconds
+  // Auto-rotate carousel every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       if (isPlaying) {
@@ -152,16 +161,30 @@ const Home = () => {
     setIsPlaying(!isPlaying);
   };
 
+  const handlePlay = (movie) => {
+    navigate(`/watch/${movie.videoId}`);
+  };
+
+  const handleAddToList = (movie, e) => {
+    e.stopPropagation();
+    console.log(`Added ${movie.title} to watchlist`);
+    // Add your watchlist logic here
+  };
+
   const MovieCard = ({ movie, size = "medium" }) => (
     <div className="group relative cursor-pointer">
-      <div className={`relative rounded-2xl overflow-hidden bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border border-white/10 transition-all duration-500 group-hover:border-white/20 group-hover:scale-105 ${
-        size === "large" ? "p-3" : "p-2"
-      }`}>
+      <div 
+        className={`relative rounded-2xl overflow-hidden bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border border-white/10 transition-all duration-500 group-hover:border-white/20 group-hover:scale-105 ${
+          size === "large" ? "p-3" : "p-2"
+        }`}
+        onClick={() => handlePlay(movie)}
+        role="button"
+      >
         <div className={`relative overflow-hidden rounded-xl bg-gray-900/50 ${
           size === "large" ? "h-80" : "h-64"
         }`}>
           <img
-            src={movie.img} // Using poster image for movie cards
+            src={movie.img}
             alt={movie.title}
             className="w-full h-full object-cover rounded-lg transition-transform duration-500 group-hover:scale-105"
           />
@@ -181,8 +204,8 @@ const Home = () => {
         </div>
 
         {/* Hover Overlay */}
-        <div className="absolute inset-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl">
-          <div className="absolute bottom-0 left-0 right-0 p-4">
+        <div className="absolute inset-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl pointer-events-none">
+          <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-auto">
             <h3 className={`font-bold text-white mb-2 ${size === "large" ? "text-lg" : "text-base"}`}>
               {movie.title}
             </h3>
@@ -192,11 +215,20 @@ const Home = () => {
               <span className="text-[#ff4ec0]">{movie.genre}</span>
             </div>
             <div className="flex space-x-2">
-              <button className="flex-1 py-2.5 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all duration-300 flex items-center justify-center space-x-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlay(movie);
+                }}
+                className="flex-1 py-2.5 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all duration-300 flex items-center justify-center space-x-2"
+              >
                 <FaPlay className="text-xs" />
                 <span>Play</span>
               </button>
-              <button className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center justify-center border border-white/20">
+              <button 
+                onClick={(e) => handleAddToList(movie, e)}
+                className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center justify-center border border-white/20"
+              >
                 <FaPlus className="text-xs" />
               </button>
             </div>
@@ -210,7 +242,7 @@ const Home = () => {
     <div className="bg-gradient-to-br from-[#0B0B17] via-[#1a1a2e] to-[#16213e] text-white min-h-screen font-['Inter']">
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">
-        {/* Image Carousel Background - Using desktop images */}
+        {/* Image Carousel Background */}
         <div className="absolute inset-0">
           {trendingShows.map((movie, index) => (
             <div
@@ -220,7 +252,7 @@ const Home = () => {
               }`}
             >
               <img
-                src={movie.desktopImg} // Using desktop image for carousel
+                src={movie.desktopImg}
                 alt={movie.title}
                 className="w-full h-full object-cover"
               />
@@ -236,7 +268,8 @@ const Home = () => {
           <div className="absolute bottom-20 -right-20 w-96 h-96 bg-[#7b2ff7]/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        {/* Navigation Arrows<button
+        {/* Navigation Arrows */}
+        <button
           onClick={prevSlide}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/50 transition-all duration-300 border border-white/20"
         >
@@ -247,8 +280,7 @@ const Home = () => {
           className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/50 transition-all duration-300 border border-white/20"
         >
           <FaChevronRight className="text-white" />
-        </button> */}
-        
+        </button>
 
         {/* Hero Carousel Section */}
         <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
@@ -293,12 +325,18 @@ const Home = () => {
                           </p>
                           
                           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                            <button className="group px-8 py-4 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-bold text-white text-lg hover:shadow-xl hover:shadow-[#ff4ec0]/25 transition-all duration-300 flex items-center justify-center space-x-3 transform hover:scale-105">
+                            <button 
+                              onClick={() => handlePlay(movie)}
+                              className="group px-8 py-4 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-bold text-white text-lg hover:shadow-xl hover:shadow-[#ff4ec0]/25 transition-all duration-300 flex items-center justify-center space-x-3 transform hover:scale-105"
+                            >
                               <FaPlay className="group-hover:scale-110 transition-transform" />
                               <span>Watch Now</span>
                             </button>
                             
-                            <button className="group px-8 py-4 bg-white/10 backdrop-blur-lg rounded-2xl font-bold text-white text-lg hover:bg-white/20 transition-all duration-300 border border-white/20 flex items-center justify-center space-x-3">
+                            <button 
+                              onClick={(e) => handleAddToList(movie, e)}
+                              className="group px-8 py-4 bg-white/10 backdrop-blur-lg rounded-2xl font-bold text-white text-lg hover:bg-white/20 transition-all duration-300 border border-white/20 flex items-center justify-center space-x-3"
+                            >
                               <FaPlus className="group-hover:scale-110 transition-transform" />
                               <span>Add to List</span>
                             </button>
@@ -323,7 +361,8 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Dots Indicator <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+              {/* Dots Indicator */}
+              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
                 {trendingShows.map((_, index) => (
                   <button
                     key={index}
@@ -335,8 +374,7 @@ const Home = () => {
                     }`}
                   />
                 ))}
-              </div>*/}
-              
+              </div>
             </div>
           </div>
         </div>
@@ -353,7 +391,7 @@ const Home = () => {
 
       {/* Content Sections */}
       <div className="container mx-auto px-6 py-20">
-        {/* Popular Shows Section - Using poster images */}
+        {/* Popular Shows Section */}
         <section className="mb-20">
           <div className="flex items-center justify-between mb-12">
             <div>

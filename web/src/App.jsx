@@ -1,17 +1,18 @@
+// App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import VideoPlayer from "./pages/VideoPlayer/VideoPlayer";
+import VideoPlayerLayout from "./components/VideoPlayerLayout/VideoPlayerLayout";
 
-// Global Components
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
-import Layout from "./components/Layout/Layout"
+import Layout from "./components/Layout/Layout";
 
-// Auth Components
 import Login from "./components/Auth/Login/Login";
 import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
-import AdminSignup from "./components/Auth/Admin/Signup";
-// Pages
+import AdminSignup from "./components/Auth/Admin/Signup/Signup";
+
 import Home from "./pages/Home/Home";
 import Browse from "./pages/Browser/Browse";
 import Genres from "./pages/Genres/Genres";
@@ -21,10 +22,13 @@ import New from "./pages/New/New";
 function App() {
   return (
     <div className="app-container flex flex-col min-h-screen">
-      {/* Main content */}
       <main className="flex-1">
         <Routes>
-          {/* Pages without Layout (if you want Navbar+Footer on these) */}
+          <Route path="/admin/signup" element={
+            <Layout>
+              <AdminSignup/>
+            </Layout>
+          }/>
           <Route path="/" element={
             <>
               <Navbar />
@@ -60,8 +64,7 @@ function App() {
               <Footer />
             </>
           } />
-          
-          {/* Auth pages with Layout */}
+
           <Route path="/login" element={
             <Layout>
               <Login />
@@ -72,16 +75,16 @@ function App() {
               <Signup />
             </Layout>
           } />
+          <Route path="/watch/:videoId" element={
+            <VideoPlayerLayout>
+              <VideoPlayer />
+            </VideoPlayerLayout>
+          } />
           <Route path="/oauth-success" element={
             <Layout>
               <OAuthSuccess />
             </Layout>
           } />
-          <Route path="/admin/signup" element={
-            <Layout>
-              <AdminSignup/>
-            </Layout>
-          }/>
         </Routes>
       </main>
     </div>
