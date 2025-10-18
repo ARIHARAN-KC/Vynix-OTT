@@ -77,7 +77,7 @@ function App() {
               <OAuthSuccess />
             </Layout>
           } />
-          <Route path="/admin/Signup" element={
+          <Route path="/admin/signup" element={
             <Layout>
               <AdminSignup/>
             </Layout>

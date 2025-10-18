@@ -2,9 +2,12 @@ import { User } from "lucide-react";
 import sequelize from "../config/config.js";
 import { Db, Models } from "./types.js";
 import { UserFactory } from "./users.js";
+import { AnimeFactory } from "./anime.js";
 
 const models: Models = {
-  User:UserFactory(sequelize)
+  User:UserFactory(sequelize),
+  Animes:AnimeFactory(sequelize),
+  
 };
 
 Object.values(models).forEach((model: any) => {
