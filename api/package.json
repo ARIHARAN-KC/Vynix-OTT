@@ -54,6 +54,7 @@
     "@types/node": "^16.11.6",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
+    "@types/uuid": "^11.0.0",
     "concurrently": "^6.3.0",
     "nodemon": "^2.0.14",
     "sequelize-cli": "^6.2.0",

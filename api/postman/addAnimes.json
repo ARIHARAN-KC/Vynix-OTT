@@ -1,0 +1,71 @@
+{
+  "info": {
+    "name": "Vynix-ZenTech Anime API",
+    "_postman_id": "e7c1a8f3-1234-5678-90ab-abcdef123456",
+    "description": "Collection to test Anime API with S3 uploads",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Anime",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "user-id",
+            "value": "admin", 
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "Demon Slayer: Kimetsu no Yaiba",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": "A young boy named Tanjiro becomes a demon slayer after his family is slaughtered and his sister Nezuko is turned into a demon.",
+              "type": "text"
+            },
+            {
+              "key": "genres",
+              "value": "[\"Action\",\"Fantasy\",\"Adventure\",\"Supernatural\"]",
+              "type": "text"
+            },
+            {
+              "key": "release_year",
+              "value": "2019",
+              "type": "text"
+            },
+            {
+              "key": "rating",
+              "value": "9.3",
+              "type": "text"
+            },
+            {
+              "key": "thumbnail",
+              "type": "file",
+              "src": "C:/My_work/Zen-Tech/Project/Vynix-ZenTech/web/src/assets/Desktop-posters/demon_slayer_desktop.png"
+            },
+            {
+              "key": "banner",
+              "type": "file",
+              "src": "C:/My_work/Zen-Tech/Project/Vynix-ZenTech/web/src/assets/posters/demon-slayer.png"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/animes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api","v1","animes"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

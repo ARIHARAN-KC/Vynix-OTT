@@ -19,6 +19,7 @@ import {
 } from "./appHelper.js";
 import db from "./models/index.js";
 import passport from "./config/passport.js";
+import s3 from "./utils/file-s3.js";
 
 export const app = express();
 export const port = normalizePort(process.env.PORT || "5000");
@@ -48,6 +49,13 @@ try {
   console.log("All models were synchronized successfully.");
 } catch (error) {
   console.error("Unable to synchronize models:", error);
+}
+
+try{
+  await s3.init();
+  console.log("S3 connected successfully.");
+}catch(error){
+  console.error("Unable to connect to S3:",error);
 }
 
 // @ts-ignore
