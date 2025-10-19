@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useLoginMutation } from "./slice"; // RTK Query slice
+import { useLoginMutation } from "./slice"; 
 import { useAuth } from "../../../contexts/AuthContext";
 import authService from "../../../services/authService";
+import AdminDashboard from "../../../pages/Admin/AdminDashboard";
+import Home from "C:/ZenTech/projects/Vynix-ZenTech/web/src/pages/Home/Home.jsx";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login : authLogin } = useAuth();
-
+  const { login: authLogin } = useAuth();
   const [login, { isLoading }] = useLoginMutation();
 
   const handleChange = (e) => {
@@ -24,17 +26,26 @@ const Login = () => {
     setError("");
 
     try {
+      // Call RTK Query Login
       const response = await login(formData).unwrap();
-      
-      const loginResponse = await authService.login({
-              email: formData.email,
-              password: formData.password,
-            });
 
-      if (response.token && response.user) {
+      // Fallback: authService login (if needed)
+      const loginResponse = await authService.login(formData);
+
+      const userData = response?.user || loginResponse?.user;
+
+      if (response?.token && userData) {
         localStorage.setItem("token", response.token);
-        authLogin(loginResponse.user);
-        navigate("/");
+        authLogin(userData);
+
+        // Role-based redirect
+        if (userData.role === "admin") {
+          navigate("/AdminDashboard");
+        } else {
+          navigate("/");
+        }
+      } else {
+        throw new Error("Invalid login response.");
       }
     } catch (err) {
       console.error("Login error:", err);

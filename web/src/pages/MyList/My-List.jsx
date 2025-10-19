@@ -15,7 +15,7 @@ const watchlist = [
     year: 2002,
     genre: "Action, Adventure",
     progress: 75,
-    videoId: "JYV-Hxg4a0Y",
+    videoPath: "/src/assets/videos/naruto.mp4",
   },
   {
     id: 2,
@@ -25,8 +25,10 @@ const watchlist = [
     year: 2007,
     genre: "Action, Drama",
     progress: 30,
-    videoId: "G9R7Wyb-YQk",
+    isNew: true,
+    videoPath: "/src/assets/videos/naruto-shippuden.mp4",
   },
+  
   {
     id: 7,
     title: "Jujutsu Kaisen",
@@ -35,7 +37,7 @@ const watchlist = [
     year: 2020,
     genre: "Supernatural",
     progress: 0,
-    videoId: "fw2jTLMbQRk",
+    videoPath: "/src/assets/videos/jujutsukaisen.mp4"
   },
 ];
 const WatchlistCard = ({ anime, onRemove, onPlay }) => (
@@ -105,9 +107,10 @@ const WatchlistCard = ({ anime, onRemove, onPlay }) => (
 const MyList = () => {
   const navigate = useNavigate();
 
-  const handlePlay = (anime) => {
-    navigate(`/watch/${anime.videoId}`);
-  };
+
+const handlePlay = (movie) => {
+  navigate(`/watch/${encodeURIComponent(movie.videoPath)}`);
+};
 
   const handleRemoveFromWatchlist = (id) => {
     console.log(`Removing anime with id ${id} from watchlist`);

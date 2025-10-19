@@ -120,10 +120,9 @@ const MovieCard = ({ anime, size = "medium", onPlay, onAddToList }) => (
 const New = () => {
   const navigate = useNavigate();
 
-  const handlePlay = (anime) => {
-    navigate(`/watch/${anime.videoId}`);
-  };
-
+const handlePlay = (movie) => {
+  navigate(`/watch/${encodeURIComponent(movie.videoPath)}`);
+};
   const handleAddToList = (anime) => {
     console.log(`Added ${anime.title} to watchlist`);
     // Add your watchlist logic here

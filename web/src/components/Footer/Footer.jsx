@@ -14,7 +14,7 @@ const Footer = () => {
               <img
                 src={vynixLogo}
                 alt="Vynix"
-                className="h-8 w-auto"
+                className="h-13 w-auto"
               />
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
