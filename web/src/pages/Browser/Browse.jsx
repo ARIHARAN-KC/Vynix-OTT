@@ -93,9 +93,9 @@ const MovieCard = ({ movie, size = "medium", onPlay }) => (
 const Browse = () => {
   const navigate = useNavigate();
 
-  const handlePlay = (movie) => {
-    navigate(`/watch/${movie.videoId}`);
-  };
+const handlePlay = (movie) => {
+  navigate(`/watch/${encodeURIComponent(movie.videoPath)}`);
+};
 
   return (
     <div className="bg-gradient-to-br from-[#0B0B17] via-[#1a1a2e] to-[#16213e] text-white min-h-screen font-['Inter'] pt-20 relative">

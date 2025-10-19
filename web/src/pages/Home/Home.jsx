@@ -161,9 +161,10 @@ const Home = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const handlePlay = (movie) => {
-    navigate(`/watch/${movie.videoId}`);
-  };
+
+const handlePlay = (movie) => {
+  navigate(`/watch/${encodeURIComponent(movie.videoPath)}`);
+};
 
   const handleAddToList = (movie, e) => {
     e.stopPropagation();
@@ -268,19 +269,6 @@ const Home = () => {
           <div className="absolute bottom-20 -right-20 w-96 h-96 bg-[#7b2ff7]/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/50 transition-all duration-300 border border-white/20"
-        >
-          <FaChevronLeft className="text-white" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/50 transition-all duration-300 border border-white/20"
-        >
-          <FaChevronRight className="text-white" />
-        </button>
 
         {/* Hero Carousel Section */}
         <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
@@ -359,21 +347,6 @@ const Home = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Dots Indicator */}
-              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
-                {trendingShows.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide 
-                        ? "bg-[#ff4ec0] w-8" 
-                        : "bg-white/30 hover:bg-white/50"
-                    }`}
-                  />
-                ))}
               </div>
             </div>
           </div>

@@ -1,8 +1,8 @@
-// App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import VideoPlayer from "./pages/VideoPlayer/VideoPlayer";
 import VideoPlayerLayout from "./components/VideoPlayerLayout/VideoPlayerLayout";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
@@ -24,67 +24,105 @@ function App() {
     <div className="app-container flex flex-col min-h-screen">
       <main className="flex-1">
         <Routes>
-          <Route path="/admin/signup" element={
-            <Layout>
-              <AdminSignup/>
-            </Layout>
-          }/>
-          <Route path="/" element={
-            <>
-              <Navbar />
-              <Home />
-              <Footer />
-            </>
-          } />
-          <Route path="/browse" element={
-            <>
-              <Navbar />
-              <Browse />
-              <Footer />
-            </>
-          } />
-          <Route path="/genres" element={
-            <>
-              <Navbar />
-              <Genres />
-              <Footer />
-            </>
-          } />
-          <Route path="/my-list" element={
-            <>
-              <Navbar />
-              <MyList />
-              <Footer />
-            </>
-          } />
-          <Route path="/new" element={
-            <>
-              <Navbar />
-              <New />
-              <Footer />
-            </>
-          } />
+          <Route
+            path="/admin/signup"
+            element={
+              <Layout>
+                <AdminSignup />
+              </Layout>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <>
+                <Navbar />
+                <Home />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/browse"
+            element={
+              <>
+                <Navbar />
+                <Browse />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/genres"
+            element={
+              <>
+                <Navbar />
+                <Genres />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/my-list"
+            element={
+              <>
+                <Navbar />
+                <MyList />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/new"
+            element={
+              <>
+                <Navbar />
+                <New />
+                <Footer />
+              </>
+            }
+          />
 
-          <Route path="/login" element={
-            <Layout>
-              <Login />
-            </Layout>
-          } />
-          <Route path="/signup" element={
-            <Layout>
-              <Signup />
-            </Layout>
-          } />
-          <Route path="/watch/:videoId" element={
-            <VideoPlayerLayout>
-              <VideoPlayer />
-            </VideoPlayerLayout>
-          } />
-          <Route path="/oauth-success" element={
-            <Layout>
-              <OAuthSuccess />
-            </Layout>
-          } />
+          <Route
+            path="/login"
+            element={
+              <Layout>
+                <Login />
+              </Layout>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <Layout>
+                <Signup />
+              </Layout>
+            }
+          />
+          <Route
+            path="/watch/:videoId"
+            element={
+              <VideoPlayerLayout>
+                <VideoPlayer />
+              </VideoPlayerLayout>
+            }
+          />
+          <Route
+            path="/oauth-success"
+            element={
+              <Layout>
+                <OAuthSuccess />
+              </Layout>
+            }
+          />
+          <Route
+            path="/AdminDashboard"
+            element={
+              <Layout>
+                <AdminDashboard />
+              </Layout>
+            }
+          />
         </Routes>
       </main>
     </div>

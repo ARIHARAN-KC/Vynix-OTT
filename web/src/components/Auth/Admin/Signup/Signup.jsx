@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { authService } from "../../../../services/authService";
+import { useAdminSignupMutation } from "C:/ZenTech/projects/Vynix-ZenTech/web/src/components/Auth/Admin/Signup/slice.js"; 
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +15,8 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const [adminSignup] = useAdminSignupMutation();
 
   const handleChange = (e) => {
     setFormData({
@@ -41,27 +43,23 @@ const Signup = () => {
     setError("");
 
     try {
-      const response = await authService.signup({
+      // Call the RTK Query mutation instead of authService
+      const response = await adminSignup({
         userName: formData.userName,
         email: formData.email,
         password: formData.password,
-        role: "admin" // Set role as admin
-      });
+        role: "admin",
+      }).unwrap();
 
-      // Auto-login after successful signup
-      const loginResponse = await authService.login({
-        email: formData.email,
-        password: formData.password
-      });
-
-      if (loginResponse.token && loginResponse.user) {
-        localStorage.setItem('token', loginResponse.token);
-        localStorage.setItem('user', JSON.stringify(loginResponse.user));
-        navigate('/admin'); // Redirect to admin dashboard
+      if (response?.user) {
+        localStorage.setItem("admin", JSON.stringify(response.user));
+        navigate("/Admindashboard");
       }
     } catch (error) {
-      console.error('Signup error:', error);
-      setError(error.message || 'Admin registration failed. Please try again.');
+      console.error("Signup error:", error);
+      setError(
+        error?.data?.message || "Admin registration failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -72,13 +70,10 @@ const Signup = () => {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          {/*<Link to="/" className="inline-block">
-            <img src={vynixLogo} alt="Vynix" className="h-20 w-auto mx-auto" />
-            <img src={vynixLogo} alt="Vynix" className="h-20 w-auto mx-auto" />
-          </Link>*/}
-          
           <h1 className="text-3xl font-bold text-white mt-4">Admin Registration</h1>
-          <p className="text-white/60 mt-2">Create admin account for Vynix management</p>
+          <p className="text-white/60 mt-2">
+            Create admin account for Vynix management
+          </p>
         </div>
 
         {/* Error Message */}
@@ -91,7 +86,10 @@ const Signup = () => {
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="userName" className="block text-sm font-medium text-white/80 mb-2">
+            <label
+              htmlFor="userName"
+              className="block text-sm font-medium text-white/80 mb-2"
+            >
               Admin Username
             </label>
             <input
@@ -107,7 +105,10 @@ const Signup = () => {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-white/80 mb-2"
+            >
               Admin Email Address
             </label>
             <input
@@ -123,7 +124,10 @@ const Signup = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-white/80 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -148,7 +152,10 @@ const Signup = () => {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/80 mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-white/80 mb-2"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -164,17 +171,24 @@ const Signup = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors duration-300"
               >
-                {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                {showConfirmPassword ? (
+                  <FaEyeSlash size={16} />
+                ) : (
+                  <FaEye size={16} />
+                )}
               </button>
             </div>
           </div>
 
           <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
             <p className="text-blue-400 text-sm text-center">
-              <strong>Admin Account:</strong> This registration will create an administrator account with full system access.
+              <strong>Admin Account:</strong> This registration will create an
+              administrator account with full system access.
             </p>
           </div>
 
@@ -186,11 +200,17 @@ const Signup = () => {
             />
             <span className="text-sm text-white/60">
               I agree to the{" "}
-              <Link to="/terms" className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300">
+              <Link
+                to="/terms"
+                className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300"
+              >
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300">
+              <Link
+                to="/privacy"
+                className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300"
+              >
                 Privacy Policy
               </Link>
             </span>
