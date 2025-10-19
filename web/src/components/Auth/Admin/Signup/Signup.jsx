@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useAdminSignupMutation } from "C:/ZenTech/projects/Vynix-ZenTech/web/src/components/Auth/Admin/Signup/slice.js"; 
+import { useAdminSignupMutation } from "./slice"; 
 
 const Signup = () => {
   const [formData, setFormData] = useState({
