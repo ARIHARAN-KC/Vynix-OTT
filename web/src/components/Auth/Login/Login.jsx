@@ -5,7 +5,7 @@ import { useLoginMutation } from "./slice";
 import { useAuth } from "../../../contexts/AuthContext";
 import authService from "../../../services/authService";
 import AdminDashboard from "../../../pages/Admin/AdminDashboard";
-import Home from "C:/ZenTech/projects/Vynix-ZenTech/web/src/pages/Home/Home.jsx";
+import Home from "../../../pages/Home/Home";
 
 
 const Login = () => {
