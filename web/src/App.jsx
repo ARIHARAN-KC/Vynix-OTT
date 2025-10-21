@@ -18,6 +18,8 @@ import Browse from "./pages/Browser/Browse";
 import Genres from "./pages/Genres/Genres";
 import MyList from "./pages/MyList/My-List";
 import New from "./pages/New/New";
+import AdminNavbar from "./components/AdminNavbar/AdminNavbar";
+import AdminRoute from "./components/AdminRoute/AdminRoute";
 
 function App() {
   return (
@@ -115,12 +117,33 @@ function App() {
               </Layout>
             }
           />
+          
+          {/* Protected Admin Routes */}
           <Route
-            path="/AdminDashboard"
+            path="/admin/dashboard"
             element={
-              <Layout>
-                <AdminDashboard />
-              </Layout>
+              <AdminRoute>
+                <>
+                  <AdminNavbar />
+                  <AdminDashboard />
+                </>
+              </AdminRoute>
+            }
+          />
+          
+          {/* Add other admin routes similarly */}
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoute>
+                <>
+                  <AdminNavbar />
+                  {/* You can add an AdminLayout here */}
+                  <div className="min-h-screen bg-gradient-to-br from-[#0B0B17] via-[#1a1a2e] to-[#16213e] pt-20">
+                    <p className="text-white text-center p-8">Admin Section - Coming Soon</p>
+                  </div>
+                </>
+              </AdminRoute>
             }
           />
         </Routes>
