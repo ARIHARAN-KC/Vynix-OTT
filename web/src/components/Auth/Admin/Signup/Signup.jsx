@@ -53,7 +53,7 @@ const Signup = () => {
 
       if (response?.user) {
         localStorage.setItem("admin", JSON.stringify(response.user));
-        navigate("/Admindashboard");
+        navigate("/admin/dashboard");
       }
     } catch (error) {
       console.error("Signup error:", error);
