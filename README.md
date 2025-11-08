@@ -85,7 +85,7 @@ This command generates a production-ready build in the dist folder.
 This command serves the production build locally for testing.
 
 Screenshots
-![alt text](image.png)
+![alt text](image-1.png)
 ![alt text](image-2.png)
 
 
