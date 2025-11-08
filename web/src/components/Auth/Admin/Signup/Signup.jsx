@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { authService } from "../../../services/authService";
-import { useSignupMutation } from "./slice";
-import { useAuth } from "../../../contexts/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAdminSignupMutation } from "./slice"; 
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,20 +10,19 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
-
   const navigate = useNavigate();
 
-  const [signup] = useSignupMutation();
+  const [adminSignup] = useAdminSignupMutation();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
     setError("");
   };
 
@@ -46,51 +43,36 @@ const Signup = () => {
     setError("");
 
     try {
-      const result = await signup({
+      // Call the RTK Query mutation instead of authService
+      const response = await adminSignup({
         userName: formData.userName,
         email: formData.email,
         password: formData.password,
+        role: "admin",
       }).unwrap();
 
-      const loginResponse = await authService.login({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (loginResponse.token && loginResponse.user) {
-        login(loginResponse.user);
-        localStorage.setItem("token", loginResponse.token);
-        navigate("/");
+      if (response?.user) {
+        localStorage.setItem("admin", JSON.stringify(response.user));
+        navigate("/admin/dashboard");
       }
-    } catch (err) {
-      console.error("Signup error:", err);
-      const errorMsg =
-        err?.data?.message ||
-        err?.message ||
-        "Signup failed. Please try again.";
-      setError(errorMsg);
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError(
+        error?.data?.message || "Admin registration failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-
-  const handleGoogleSignup = () => {
-    setGoogleLoading(true);
-    const API_URL =
-      import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
-    window.location.href = `${API_URL}/account/auth/google`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B17] via-[#1A0B2E] to-[#2D0B45] flex items-center justify-center p-4 font-['Inter']">
       <div className="max-w-md w-full">
-        {/* Logo & Header */}
+        {/* Logo */}
         <div className="text-center mb-8">
-          {/* <img src={vynixLogo} alt="Vynix" className="h-20 mx-auto" /> */}
-          <h1 className="text-3xl font-bold text-white mt-4">Join Vynix</h1>
+          <h1 className="text-3xl font-bold text-white mt-4">Admin Registration</h1>
           <p className="text-white/60 mt-2">
-            Create your account and start your anime adventure
+            Create admin account for Vynix management
           </p>
         </div>
 
@@ -101,47 +83,14 @@ const Signup = () => {
           </div>
         )}
 
-        {/* Google Signup */}
-        <div className="mb-6">
-          <button
-            onClick={handleGoogleSignup}
-            disabled={googleLoading}
-            className="w-full p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center space-x-2">
-              {googleLoading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <FaGoogle className="text-xl text-white" />
-              )}
-              <span className="text-white/80 text-sm font-medium group-hover:text-white">
-                {googleLoading ? "Connecting..." : "Sign up with Google"}
-              </span>
-            </div>
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-transparent text-white/40">
-              Or sign up with email
-            </span>
-          </div>
-        </div>
-
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username */}
           <div>
             <label
               htmlFor="userName"
               className="block text-sm font-medium text-white/80 mb-2"
             >
-              Username
+              Admin Username
             </label>
             <input
               type="text"
@@ -150,18 +99,17 @@ const Signup = () => {
               value={formData.userName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] outline-none"
-              placeholder="Choose a username"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
+              placeholder="Choose admin username"
             />
           </div>
 
-          {/* Email */}
           <div>
             <label
               htmlFor="email"
               className="block text-sm font-medium text-white/80 mb-2"
             >
-              Email Address
+              Admin Email Address
             </label>
             <input
               type="email"
@@ -170,12 +118,11 @@ const Signup = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] outline-none"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
+              placeholder="Enter admin email"
             />
           </div>
 
-          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -191,20 +138,19 @@ const Signup = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] outline-none"
-                placeholder="Create a password (min. 8 characters)"
+                className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
+                placeholder="Create admin password (min. 8 characters)"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors duration-300"
               >
                 {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
               </button>
             </div>
           </div>
 
-          {/* Confirm Password */}
           <div>
             <label
               htmlFor="confirmPassword"
@@ -220,13 +166,15 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] outline-none"
-                placeholder="Confirm your password"
+                className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder-white/40 focus:border-[#7b2ff7] focus:ring-1 focus:ring-[#7b2ff7] transition-all duration-300 outline-none"
+                placeholder="Confirm admin password"
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60"
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors duration-300"
               >
                 {showConfirmPassword ? (
                   <FaEyeSlash size={16} />
@@ -237,57 +185,62 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* Terms Checkbox */}
+          <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+            <p className="text-blue-400 text-sm text-center">
+              <strong>Admin Account:</strong> This registration will create an
+              administrator account with full system access.
+            </p>
+          </div>
+
           <label className="flex items-start space-x-2">
             <input
               type="checkbox"
               required
-              className="w-4 h-4 mt-1 rounded bg-white/5 border-white/10 text-[#7b2ff7] focus:ring-[#7b2ff7]"
+              className="w-4 h-4 mt-1 rounded bg-white/5 border-white/10 text-[#7b2ff7] focus:ring-[#7b2ff7] focus:ring-offset-[#0B0B17]"
             />
             <span className="text-sm text-white/60">
               I agree to the{" "}
               <Link
                 to="/terms"
-                className="text-[#7b2ff7] hover:text-[#ff4ec0]"
+                className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300"
               >
                 Terms of Service
               </Link>{" "}
               and{" "}
               <Link
                 to="/privacy"
-                className="text-[#7b2ff7] hover:text-[#ff4ec0]"
+                className="text-[#7b2ff7] hover:text-[#ff4ec0] transition-colors duration-300"
               >
                 Privacy Policy
               </Link>
             </span>
           </label>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-semibold text-white hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all disabled:opacity-50"
+            className="w-full py-3 px-4 bg-gradient-to-r from-[#ff4ec0] to-[#7b2ff7] rounded-2xl font-semibold text-white hover:shadow-lg hover:shadow-[#ff4ec0]/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Creating Account...</span>
+                <span>Creating Admin Account...</span>
               </div>
             ) : (
-              "Create Account"
+              "Create Admin Account"
             )}
           </button>
         </form>
 
-        {/* Login Redirect */}
+        {/* Login Link */}
         <div className="text-center mt-6">
           <p className="text-white/60">
-            Already have an account?{" "}
+            Already have an admin account?{" "}
             <Link
-              to="/login"
-              className="text-[#7b2ff7] hover:text-[#ff4ec0] font-medium"
+              to="/admin/login"
+              className="text-[#7b2ff7] hover:text-[#ff4ec0] font-medium transition-colors duration-300"
             >
-              Sign in
+              Admin Login
             </Link>
           </p>
         </div>

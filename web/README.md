@@ -1,16 +1,96 @@
-# React + Vite
+Vynix-OTT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vynix-OTT is a platform designed for anime enthusiasts. It offers a modern, fast, and responsive frontend built using React and Vite. This setup ensures smooth performance, instant reloads during development, and easy scalability for production.
 
-Currently, two official plugins are available:
+Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Vite — next-generation frontend tooling with lightning-fast HMR
 
-## React Compiler
+React — UI library for building interactive interfaces
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+ESLint — built-in linting for clean and consistent code
 
-## Expanding the ESLint configuration
+Fast Refresh — instant updates during development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Supports both Babel and SWC compilers for optimal performance
+
+Official Plugins
+
+This project supports two official React plugins for Vite:
+
+@vitejs/plugin-react
+
+Uses Babel
+ (or oxc
+) for Fast Refresh.
+
+@vitejs/plugin-react-swc
+
+Uses SWC
+ for faster builds and hot reloading.
+
+React Compiler (Optional)
+
+The React Compiler is not enabled by default due to its potential impact on development and build performance.
+To enable it, follow the official documentation:
+React Compiler Installation Guide
+
+ESLint Configuration
+
+This project includes a minimal ESLint setup to ensure code consistency and quality.
+For production-grade applications, it is recommended to:
+
+Use TypeScript for better type safety
+
+Enable type-aware lint rules
+
+For reference, see:
+
+Vite React + TypeScript Template
+
+TypeScript ESLint Documentation
+
+Installation & Setup
+# Clone the repository
+git clone https://github.com/ARIHARAN-KC/Vynix-OTT.git
+
+# Navigate to the project web directory
+cd web
+
+# Install dependencies
+yarn
+
+# Start the development web server
+yarn dev
+
+Your web will be available at: http://localhost:5173
+
+# Navigate to the project api directory
+cd api
+
+# Install dependencies
+yarn
+
+# Start the development web server
+yarn start
+
+Your api will be available at: http://localhost:5000
+
+Build for Production
+yarn build
+
+
+This command generates a production-ready build in the dist folder.
+
+This command serves the production build locally for testing.
+
+Screenshots
+![alt text](image.png)
+![alt text](image-2.png)
+
+
+License
+
+This project is licensed under the MIT License — you are free to use and modify it as needed.
+
+

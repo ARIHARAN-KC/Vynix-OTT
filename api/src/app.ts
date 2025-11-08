@@ -1,13 +1,12 @@
-import { default as express, RequestHandler } from "express";
+import express, { Request, Response, RequestHandler } from "express";
 import session from "express-session";
-import { default as cookieParser } from "cookie-parser";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import { default as logger } from "morgan";
+import logger from "morgan";
 import url from "url";
 import path from "path";
-import * as http from "http";
+import http from "http";
 import dotenv from "dotenv";
-import { Request, Response } from "express";
 import cors from "cors";
 import { router } from "./api/routes/index.js";
 import {
@@ -19,6 +18,9 @@ import {
 } from "./appHelper.js";
 import db from "./models/index.js";
 import passport from "./config/passport.js";
+import s3 from "./utils/file-s3.js";
+import { Server as SocketIOServer } from "socket.io";
+
 
 export const app = express();
 export const port = normalizePort(process.env.PORT || "5000");
@@ -33,7 +35,6 @@ server.on("listening", onListening);
 
 export const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
-
 dotenv.config();
 
 try {
@@ -50,20 +51,28 @@ try {
   console.error("Unable to synchronize models:", error);
 }
 
-// @ts-ignore
+try {
+  await s3.init();
+  console.log("S3 connected successfully.");
+} catch (error) {
+  console.error("Unable to connect to S3:", error);
+}
+
 app.use(logger("dev"));
-// @ts-ignore
 app.use(
   helmet({
     contentSecurityPolicy: false,
   })
 );
-// @ts-ignore
 app.use(express.json());
-// @ts-ignore
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? undefined : "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(
   session({
     secret: "veryveryveryimportantsecret",
@@ -77,14 +86,32 @@ app.use(
     saveUninitialized: true,
   }) as unknown as RequestHandler
 );
-app.use("/static", express.static(path.join(__dirname, "", "web", "static")));
-app.use("/assets", express.static(path.join(__dirname, "", "web", "assets")));
-app.use("/favicon", express.static(path.join(__dirname, "", "web", "favicon")));
+
+app.use("/static", express.static(path.join(__dirname, "../../web/static")));
+app.use("/assets", express.static(path.join(__dirname, "../../web/assets")));
+app.use("/favicon", express.static(path.join(__dirname, "../../web/favicon")));
 app.use("/api/v1", router);
 
-// // serve react build
+
+export const io = new SocketIOServer(server, {
+  cors: {
+    origin: process.env.NODE_ENV === "production" ? undefined : "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A client connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+const frontendPath = path.resolve(__dirname, "../../web");
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "", "web", "index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 app.use(handle404);

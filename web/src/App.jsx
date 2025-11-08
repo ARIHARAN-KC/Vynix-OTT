@@ -1,82 +1,151 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import VideoPlayer from "./pages/VideoPlayer/VideoPlayer";
+import VideoPlayerLayout from "./components/VideoPlayerLayout/VideoPlayerLayout";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
-// Global Components
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
-import Layout from "./components/Layout/Layout"
+import Layout from "./components/Layout/Layout";
 
-// Auth Components
 import Login from "./components/Auth/Login/Login";
-import Signup from "./components/Auth/SIgnup/Signup";
+import Signup from "./components/Auth/Signup/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess/OAuthSuccess";
+import AdminSignup from "./components/Auth/Admin/Signup/Signup";
 
-// Pages
 import Home from "./pages/Home/Home";
 import Browse from "./pages/Browser/Browse";
 import Genres from "./pages/Genres/Genres";
 import MyList from "./pages/MyList/My-List";
 import New from "./pages/New/New";
+import AdminNavbar from "./components/AdminNavbar/AdminNavbar";
+import AdminRoute from "./components/AdminRoute/AdminRoute";
 
 function App() {
   return (
     <div className="app-container flex flex-col min-h-screen">
-      {/* Main content */}
       <main className="flex-1">
         <Routes>
-          {/* Pages without Layout (if you want Navbar+Footer on these) */}
-          <Route path="/" element={
-            <>
-              <Navbar />
-              <Home />
-              <Footer />
-            </>
-          } />
-          <Route path="/browse" element={
-            <>
-              <Navbar />
-              <Browse />
-              <Footer />
-            </>
-          } />
-          <Route path="/genres" element={
-            <>
-              <Navbar />
-              <Genres />
-              <Footer />
-            </>
-          } />
-          <Route path="/my-list" element={
-            <>
-              <Navbar />
-              <MyList />
-              <Footer />
-            </>
-          } />
-          <Route path="/new" element={
-            <>
-              <Navbar />
-              <New />
-              <Footer />
-            </>
-          } />
+          <Route
+            path="/admin/signup"
+            element={
+              <Layout>
+                <AdminSignup />
+              </Layout>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <>
+                <Navbar />
+                <Home />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/browse"
+            element={
+              <>
+                <Navbar />
+                <Browse />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/genres"
+            element={
+              <>
+                <Navbar />
+                <Genres />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/my-list"
+            element={
+              <>
+                <Navbar />
+                <MyList />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/new"
+            element={
+              <>
+                <Navbar />
+                <New />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <Layout>
+                <Login />
+              </Layout>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <Layout>
+                <Signup />
+              </Layout>
+            }
+          />
+          <Route
+            path="/watch/:videoId"
+            element={
+              <VideoPlayerLayout>
+                <VideoPlayer />
+              </VideoPlayerLayout>
+            }
+          />
+          <Route
+            path="/oauth-success"
+            element={
+              <Layout>
+                <OAuthSuccess />
+              </Layout>
+            }
+          />
           
-          {/* Auth pages with Layout */}
-          <Route path="/login" element={
-            <Layout>
-              <Login />
-            </Layout>
-          } />
-          <Route path="/signup" element={
-            <Layout>
-              <Signup />
-            </Layout>
-          } />
-          <Route path="/oauth-success" element={
-            <Layout>
-              <OAuthSuccess />
-            </Layout>
-          } />
+          {/* Protected Admin Routes */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <>
+                  <AdminNavbar />
+                  <AdminDashboard />
+                </>
+              </AdminRoute>
+            }
+          />
+          
+          {/* Add other admin routes similarly */}
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoute>
+                <>
+                  <AdminNavbar />
+                  {/* You can add an AdminLayout here */}
+                  <div className="min-h-screen bg-gradient-to-br from-[#0B0B17] via-[#1a1a2e] to-[#16213e] pt-20">
+                    <p className="text-white text-center p-8">Admin Section - Coming Soon</p>
+                  </div>
+                </>
+              </AdminRoute>
+            }
+          />
         </Routes>
       </main>
     </div>
